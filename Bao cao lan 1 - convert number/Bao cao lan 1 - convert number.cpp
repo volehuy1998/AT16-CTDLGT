@@ -17,33 +17,51 @@ std::vector< std::pair<char, int> > rename_map =
 	{'A', 10},
 };
 
-char rename(int value)
+template<typename from_type, typename target_type>
+target_type get_value(from_type from_value)
 {
-	char result = 0;
+	target_type result;
 
-	switch (value)
+	auto it = std::find_if(
+		rename_map.begin(),
+		rename_map.end(),
+		[from_value](const std::pair<char, int>& element) {
+			if (std::is_same<target_type, int>::value)
+			{
+				return element.first == from_value;
+			}
+			else if (std::is_same<target_type, char>::value)
+			{
+				return element.second == from_value;
+			}
+		});
+
+
+	if (std::is_same<target_type, int>::value)
 	{
-	case 15:
-		result = 'F';
-		break;
-	case 14:
-		result = 'E';
-		break;
-	case 13:
-		result = 'D';
-		break;
-	case 12:
-		result = 'C';
-		break;
-	case 11:
-		result = 'B';
-		break;
-	case 10:
-		result = 'A';
-		break;
-	default:
-		result = value + 48;
-		break;
+		if (it == rename_map.end())
+		{
+			// not found
+			result = from_value - 48;
+		}
+		else
+		{
+			// found
+			result = (*it).second;
+		}
+	}
+	else if (std::is_same<target_type, char>::value)
+	{
+		if (it == rename_map.end())
+		{
+			// not found
+			result = from_value + 48;
+		}
+		else
+		{
+			// found
+			result = (*it).first;
+		}
 	}
 
 	return result;
@@ -66,8 +84,9 @@ std::string convert_decimal_to_X(int N, int want_to)
 	while (my_stack.empty() == false)
 	{
 		int top = my_stack.top();
-		result += rename(top);
 		my_stack.pop();
+		char chr = get_value<int, char>(top);
+		result += chr;
 	}
 
 	return result;
@@ -99,27 +118,7 @@ int exercise_2(std::string value, int want_from)
 	for (int i = 0; i < len; i++)
 	{
 		char single = value[i];
-		int single_decimal = 0;
-		auto it = std::find_if(
-			rename_map.begin(),
-			rename_map.end(),
-			[single](const std::pair<char, int>& element)
-			{
-				// return pair if vector contain character
-				return element.first == single;
-			});
-
-		if (it == rename_map.end())
-		{
-			// not found
-			single_decimal = single - 48;
-		}
-		else
-		{
-			// found
-			single_decimal = (*it).second;
-		}
-
+		int single_decimal = get_value<char, int>(single);
 		result += single_decimal * std::pow(want_from, (len - 1) - i);
 	}
 
