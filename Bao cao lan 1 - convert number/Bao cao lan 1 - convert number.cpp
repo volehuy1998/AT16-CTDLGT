@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <vector>
-#include <string>
 #include <stack>
 #include <utility> // using pair
 
@@ -35,7 +34,6 @@ target_type get_value(from_type from_value)
 				return element.second == from_value;
 			}
 		});
-
 
 	if (std::is_same<target_type, int>::value)
 	{
@@ -85,8 +83,8 @@ std::string convert_decimal_to_X(int N, int want_to)
 	{
 		int top = my_stack.top();
 		my_stack.pop();
-		char chr = get_value<int, char>(top);
-		result += chr;
+		char single_char = get_value<int, char>(top);
+		result += single_char;
 	}
 
 	return result;
@@ -117,8 +115,8 @@ int exercise_2(std::string value, int want_from)
 
 	for (int i = 0; i < len; i++)
 	{
-		char single = value[i];
-		int single_decimal = get_value<char, int>(single);
+		char single_char = value[i];
+		int single_decimal = get_value<char, int>(single_char);
 		result += single_decimal * std::pow(want_from, (len - 1) - i);
 	}
 
